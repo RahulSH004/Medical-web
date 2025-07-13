@@ -7,3 +7,34 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  phoneNumber String?  @unique
+  password  String   
+  DateofBirth DateTime
+  role      UserRole   @default(PATIENT)
+  isphoneVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  doctor    Doctor?
+}
+model Doctor{
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization String?
+  experience Int?
+  qualifications String?
+  bio       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  DOCTOR
+  PATIENT
+}
