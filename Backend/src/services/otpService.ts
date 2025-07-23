@@ -50,5 +50,7 @@ export const verifyOTP = async (phoneNumber: string, otp: string): Promise<boole
         return false;
     }
     await redis.del(key);
+    const verfiykey = `otp_verified:${phoneNumber}`;
+    await redis.set(verfiykey, "true", "EX", OTP_EXPIRY_SECONDS);
     return true;
 }
