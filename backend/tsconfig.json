@@ -14,5 +14,5 @@
     "types": ["node"],
     "sourceMap": true
   },
-  "exclude": ["node_modules", "prisma"],
+  "exclude": ["node_modules", "prisma.config.ts"]
 }
