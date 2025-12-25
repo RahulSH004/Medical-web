@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import authrouter from "./routes/auth.routes";
+import authRouter from "./routes/auth.routes";
 
 const app = express();
 
@@ -10,6 +10,6 @@ app.use(express.json());
 app.get('/health', (req, res) => {
     res.json({ message: 'OK' });
 });
-app.use("/api/auth", authrouter);
+app.use("/api/auth", authRouter);
 
 export default app;

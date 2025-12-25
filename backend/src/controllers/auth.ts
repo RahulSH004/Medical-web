@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import z from "zod";
 import { prisma } from "../config/prisma"
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken"
 
 
 const SALT_ROUND = 10
@@ -70,14 +71,25 @@ export async function login(req:Request, res:Response){
             })
         }
         const isvalid = await bcrypt.compare(password, user.password)
+        
         if(!isvalid){
             return res.status(401).json({
                 message:"Invaild Email or Password"
             })
         }
+        const token = jwt.sign({
+            userId : user.id,
+            role: user.role
+        },
+        process.env.JWT_SECRET as string,
+        {
+            expiresIn: "1d",
+        }
+        )
+        
         return res.status(200).json({
             message:"Login successfully",
-            id: user.id
+            token
         })
     }catch(err){
         console.error("login error:", err)
