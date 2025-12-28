@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import z from "zod";
+import z, { email } from "zod";
 import { prisma } from "../config/prisma"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
+import { Role } from "../generated/prisma/enums";
 
 
 const SALT_ROUND = 10
@@ -36,8 +37,9 @@ export async function register(req:Request, res:Response){
         await prisma.user.create({
             data: {
                 email,
-                password: hashpassword,
+                passwordHash: hashpassword,
                 name,
+                role: "USER"
             },
         });
         return res.status(201).json({
@@ -52,16 +54,23 @@ export async function register(req:Request, res:Response){
     }
 
 }
-export async function login(req:Request, res:Response){
-    const {email, password} = req.body;
 
-    if (!email || !password) {
+const loginSchema = z.object({
+    email: z.string().email(),
+    password: z.string().min(4),
+})
+export async function login(req:Request, res:Response){
+
+    try{
+    const parsed = loginSchema.safeParse(req.body);
+
+    if (!parsed.success) {
         return res.status(400).json({
-          message: "Email and password are required",
+          message: "Invalid Input",
+          errors: parsed.error.flatten(),
         });
     }
-    try{
-
+      const { email, password } = parsed.data;
         const user = await prisma.user.findUnique({
             where:{email},
         })
@@ -70,7 +79,7 @@ export async function login(req:Request, res:Response){
                 message:"Invaild Email or Password"
             })
         }
-        const isvalid = await bcrypt.compare(password, user.password)
+        const isvalid = await bcrypt.compare(password, user.passwordHash)
         
         if(!isvalid){
             return res.status(401).json({
@@ -78,7 +87,7 @@ export async function login(req:Request, res:Response){
             })
         }
         const token = jwt.sign({
-            userId : user.id,
+            sub : user.id,
             role: user.role
         },
         process.env.JWT_SECRET as string,

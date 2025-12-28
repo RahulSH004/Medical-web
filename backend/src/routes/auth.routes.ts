@@ -5,16 +5,16 @@ import {login, register} from "../controllers/auth"
 import { authMiddleware } from "../middleware/auth.middleware";
 
 
-const authrouter = Router();
+const authRouter = Router();
 
-authrouter.post("/signup", register);
-authrouter.post("/login", login);
+authRouter.post("/signup", register);
+authRouter.post("/login", login);
 
-authrouter.get("/home", authMiddleware, (req:Request, res: Response) => {
+authRouter.get("/profile", authMiddleware, (req:Request, res: Response) => {
     return res.status(200).json({
-        userId: req.user?.userId,
+        userId: req.user?.id,
         role: req.user?.role
     })
 })
 
-export default authrouter;
+export default authRouter;
