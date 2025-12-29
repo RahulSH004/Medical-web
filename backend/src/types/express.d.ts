@@ -1,16 +1,17 @@
 import "express";
+import { Role } from "../rbac/role";
 
 declare global {
   namespace Express {
     interface Request {
       user?: {
-        userId: string;
-        role?: string;
+        id: string;
+        role?: Role;
       };
     }
   }
 }
 interface AuthJwtPayload {
-  userId: string;
-  role?: string;
+  sub: string;
+  role?: Role;
 }
