@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import z, { email } from "zod";
+import z from "zod";
 import { prisma } from "../config/prisma"
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
-import { Role } from "../generated/prisma/enums";
+
 
 
 const SALT_ROUND = 10

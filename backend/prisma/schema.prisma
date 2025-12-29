@@ -14,32 +14,62 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
+  id        String   @id @default(cuid())
+  email     String   @unique
   passwordHash String
-  name         String
-  role         Role      @default(USER)
-  bookings     Booking[]
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  name      String
+  role      Role     @default(USER)
+  // Patient bookings
+  bookings  Booking[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Test{
+  id    String  @id @default(cuid())
+  name  String
+  description   String?
+  price       Float
+  duration    String
+  category    String
+  isActive    Boolean   @default(true)
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
 }
 
 model Booking {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  reports   Report[]
-  createdAt DateTime @default(now())
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  testId         String
+  test           Test     @relation(fields: [testId], references: [id])
+  collectionDate DateTime
+  collectionTime String
+  status         BookingStatus @default(PENDING)
+  report         Report?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 model Report {
-  id        String   @id @default(cuid())
-  bookingId String
-  booking   Booking  @relation(fields: [bookingId], references: [id])
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  bookingId  String   @unique
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  fileUrl    String?
+  remarks    String?
+  uploadedBy String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 enum Role{
   USER
   LAB_STAFF
-  DOCTOR
   ADMIN
+}
+enum BookingStatus{
+  PENDING
+  SAMPLE_COLLECTED
+  PROCESSING
+  COMPLETED
+  CANCELLED
 }

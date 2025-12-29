@@ -1,5 +1,5 @@
 import "express";
-import { Role } from "../rbac/role";
+import { Role } from "../rbac/permission/role";
 
 declare global {
   namespace Express {
