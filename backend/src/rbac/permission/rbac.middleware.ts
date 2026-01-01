@@ -21,12 +21,6 @@ export function rbac(requiredPermission: string | string[]){
         const role = req.user.role;
         const allowed_permission = ROLE_PERMISSIONS[role]
 
-        console.log("=== RBAC DEBUG ===");
-        console.log("User Role:", role);
-        console.log("Required Permissions:", requiredPermission);
-        console.log("User's Allowed Permissions:", allowed_permission);
-        console.log("================");
-        
         if(!allowed_permission){
             return res.status(403).json({
                 message: "Role not allowed"

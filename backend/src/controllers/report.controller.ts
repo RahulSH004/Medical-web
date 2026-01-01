@@ -22,7 +22,6 @@ export async function getReportController(req:Request, res:Response, next:NextFu
         //Global access
         if(
         user.role === "ADMIN" ||
-        user.role === "DOCTOR" ||
         user.role === "LAB_STAFF"
         ){
         return res.json(report)
