@@ -3,14 +3,21 @@ import { getLabBookingsController } from "../controllers/lab.controller";
 import { authMiddleware } from "../middleware/auth.middleware";
 import { rbac } from "../rbac/permission/rbac.middleware";
 import { PERMISSIONS } from "../rbac/permission/permission";
+import { createReportsController } from "../controllers/create_reports.controller";
 
-const labbookingroute = Router();
+const labRoute = Router();
 
-labbookingroute.get(
+labRoute.get(
     "/lab/bookings",
     authMiddleware,
     rbac([PERMISSIONS.BOOKING_VIEW_ALL]),
     getLabBookingsController
 );
+labRoute.post(
+    "/lab/reports",
+    authMiddleware,
+    rbac([PERMISSIONS.REPORT_UPLOAD]),
+    createReportsController
+  );
 
-export default labbookingroute;
+export default labRoute;
