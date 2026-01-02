@@ -8,7 +8,7 @@ const createreportSchema  = z.object({
     remarks: z.string()
 })
 
-export async function createReportsController(res: Response, req: Request){
+export async function createReportsController(req: Request, res: Response){
     try{
         const parsed  = createreportSchema.safeParse(req.body);
         if(!parsed.success){
