@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import z from "zod";
 import { BookingStatus } from "../generated/prisma/enums";
 import { prisma } from "../config/prisma";
+import { BOOKING_CONFIG } from "../config/booking.config";
 
 const createBookingSchema = z.object({
     testId: z.string().min(1),
@@ -27,6 +28,40 @@ export async function createBookingController(req:Request, res:Response){
                 message: "Unauthorized",
             })
         }
+
+        // validate time-slot 
+        if(!BOOKING_CONFIG.AVAILABLE_TIME_SLOTS.includes(collectionTime)){
+            return res.status(400).json({
+                message: "Invaild Slot",
+                availableSlot: BOOKING_CONFIG.AVAILABLE_TIME_SLOTS,
+            })
+        }
+        const requestedDate = new Date(collectionDate);
+        const now = new Date();
+
+        if(requestedDate < now){
+            return res.status(400).json({
+                message:"Cannot Book for past Dates"
+            })
+        }
+
+        //
+        const hoursUntilBooking = (requestedDate.getTime() - now.getTime())/(1000*60*60)
+        if(hoursUntilBooking < BOOKING_CONFIG.MIN_HOURS_BEFORE_BOOKING){
+            return res.status(400).json({
+                message:`Bookings must be made at least ${BOOKING_CONFIG.MIN_HOURS_BEFORE_BOOKING} hours in advance`
+            })
+        }
+
+        const maxDate = new Date();
+        maxDate.setDate(maxDate.getDate() + BOOKING_CONFIG.MAX_ADVANCE_BOOKING_DAYS);
+        
+        if (requestedDate > maxDate) {
+          return res.status(400).json({
+            message: `Cannot book more than ${BOOKING_CONFIG.MAX_ADVANCE_BOOKING_DAYS} days in advance`,
+          });
+        }
+
         const test = await prisma.test.findUnique({
             where: {
                 id: testId
@@ -43,7 +78,25 @@ export async function createBookingController(req:Request, res:Response){
                 meassage: "This test is currently unavailable"
             })
         }
-        
+        const existingBooking  = await prisma.booking.count({
+            where:{
+                collectionDate: collectionDate,
+                collectionTime: collectionTime,
+                status:{
+                    notIn: ["CANCELLED"],
+                }
+            }
+        })
+        if(existingBooking >= BOOKING_CONFIG.LAB_CAPACITY_PER_SLOT){
+            return res.status(400).json({
+                messgae: "This time slot is fully Booked",
+                requestedSlot: collectionTime,
+                requestedDate: collectionDate,
+                suggestion: "Please choose diffrent time slot",
+
+            })
+        }
+
         const booking = await prisma.booking.create({
             data:{
                 userId: userId,
