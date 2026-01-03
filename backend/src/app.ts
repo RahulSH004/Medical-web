@@ -1,11 +1,7 @@
 import express from "express";
 import cors from "cors";
-import authRouter from "./routes/auth.routes";
-import reportrouter from "./routes/report.route";
-import testsRouter from "./routes/tests.routes";
-import bookingRouter from "./routes/booking.route";
-import labRoute from "./routes/lab.route";
-
+import routes from "./routes";
+import { errorMiddleware } from "./middleware/error.middleware";
 
 const app = express();
 
@@ -13,12 +9,11 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/health', (req, res) => {
-    res.json({ message: 'OK' });
+    res.json({ success: true, message: 'OK' });
 });
-app.use("/api/auth", authRouter);
-// app.use("/api", reportrouter)
-app.use("/api", testsRouter);
-app.use("/api", bookingRouter);
-app.use("/api", labRoute);
+
+app.use("/api", routes);
+
+app.use(errorMiddleware);
 
 export default app;

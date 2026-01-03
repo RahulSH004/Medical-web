@@ -34,7 +34,7 @@ export function authMiddleware(
         next();
     }catch(err){
         return res.status(401).json({
-            message: "Invaild or expired token",
+            message: "Invalid or expired token",
         })
     }
 }

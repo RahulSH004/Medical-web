@@ -9,4 +9,17 @@
 * 🟢 You can import this file directly.
 */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.BookingStatus = exports.Role = void 0;
+exports.Role = {
+    USER: 'USER',
+    LAB_STAFF: 'LAB_STAFF',
+    ADMIN: 'ADMIN'
+};
+exports.BookingStatus = {
+    PENDING: 'PENDING',
+    SAMPLE_COLLECTED: 'SAMPLE_COLLECTED',
+    PROCESSING: 'PROCESSING',
+    COMPLETED: 'COMPLETED',
+    CANCELLED: 'CANCELLED'
+};
 //# sourceMappingURL=enums.js.map

@@ -1,5 +1,5 @@
 import "express";
-import { Role } from "../rbac/permission/role";
+import { Role } from "../rbac/role";
 
 declare global {
   namespace Express {
@@ -11,7 +11,8 @@ declare global {
     }
   }
 }
-interface AuthJwtPayload {
+
+export interface AuthJwtPayload {
   sub: string;
   role?: Role;
 }

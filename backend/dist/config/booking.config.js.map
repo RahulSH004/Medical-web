@@ -1,0 +1,1 @@
+{"version":3,"file":"booking.config.js","sourceRoot":"","sources":["../../src/config/booking.config.ts"],"names":[],"mappings":";;;AAAA,4CAA6D;AAEhD,QAAA,cAAc,GAAG;IAC1B,qBAAqB,EAAE,6BAAiB,CAAC,qBAAqB;IAC9D,oBAAoB,EAAE,sBAAU;IAChC,wBAAwB,EAAE,6BAAiB,CAAC,wBAAwB;IACpE,wBAAwB,EAAE,6BAAiB,CAAC,wBAAwB;CACvE,CAAC"}
